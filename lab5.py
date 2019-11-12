@@ -11,11 +11,13 @@ import numpy as np
 from sklearn import mixture
 
 
+
 def compute_mfcc(filename):
 
     (rate, sig) = wav.read(filename)
     m = mfcc(sig, rate)
     return m
+
 
 
 def zapis_do_pliku():
@@ -47,8 +49,6 @@ def odczyt_z_pliku():
     pickle_in.close()
     print(mfcc_data)
 """
-zapis_do_pliku()
-
 
 def mfcc_cyfry(number):
     number=str(number)
@@ -63,11 +63,31 @@ def mfcc_cyfry(number):
     mfcc=mfcc[0]
     return mfcc
 
-mfcc0=mfcc_cyfry(0)
-def GMobject(MFCC,n_comp,n_iter):
 
-    GMM= mixture.GaussianMixture(n_comp, max_iter=n_iter, covariance_type="diag",tol=1e-10000,reg_covar=1e-06,n_init=1,init_params='random')
-    models=GMM.fit(MFCC)
+
+def GMobject(MFCC,n_comp,n_iter):
+    GMM = mixture.GaussianMixture(n_comp, max_iter=n_iter, covariance_type="diag",tol=1e-10000,reg_covar=1e-06,n_init=1,init_params='random')
+    models = GMM.fit(MFCC)
     return models
 
-gmm=GMobject(mfcc0,5,15)
+
+
+zapis_do_pliku()
+
+mfcc_new = []
+
+for n in range(0, 9):
+    mfcc_new.append(mfcc_cyfry(n))
+
+gmm = []
+
+for n in range(0, 9):
+    gmm.append(GMobject(mfcc_new[n],5,15))
+
+logprob = []
+
+for n in range(0, 9):
+    logprob.append(gmm[n].score(mfcc_new[n]))
+
+for n in range(0, 9):
+    print(logprob[n])
