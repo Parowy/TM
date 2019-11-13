@@ -58,12 +58,13 @@ def mfcc_cyfry(number):
     for ID in dict_Data:
         list=dict_Data[ID]
         if list[1]==number:
-            mfcc.append(list[0])
+            mfcc.extend(list[0])
+    mfcc_macierz=np.asarray(mfcc)
     dict_file.close()
-    mfcc=mfcc[0]
-    return mfcc
+    mfcc_lista=mfcc
+    return (mfcc_lista, mfcc_macierz)
 
-
+a=mfcc_cyfry(0)
 
 def GMobject(MFCC,n_comp,n_iter):
     GMM = mixture.GaussianMixture(n_comp, max_iter=n_iter, covariance_type="diag",tol=1e-10000,reg_covar=1e-06,n_init=1,init_params='random')
@@ -74,20 +75,34 @@ def GMobject(MFCC,n_comp,n_iter):
 
 zapis_do_pliku()
 
+# OBLICZENI KOMPONENTOW
+def komponenty(mfcc,n):
+    g=[]
+    for i in range(1,250):
+        gm=mixture.GaussianMixture(n,max_iter=i, covariance_type="diag",tol=1e-100).fit(mfcc)
+        g.append(gm.bic(mfcc))
+    n_komponentow=min(g)
+    return n_komponentow
+
+
+
 mfcc_new = []
 
-for n in range(0, 9):
+for n in range(0, 10):
     mfcc_new.append(mfcc_cyfry(n))
 
 gmm = []
 
-for n in range(0, 9):
+for n in range(0, 10):
     gmm.append(GMobject(mfcc_new[n],5,15))
+
+
 
 logprob = []
 
-for n in range(0, 9):
+for n in range(0, 10):
     logprob.append(gmm[n].score(mfcc_new[n]))
 
-for n in range(0, 9):
+for n in range(0, 10):
     print(logprob[n])
+
