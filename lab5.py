@@ -114,3 +114,5 @@ for n in range(0, 10):
 for n in range(0, 10):
     print(logprob[n])
 
+    
+    # nasz nowy kod- > https://gist.github.com/Pararara/6f1aefc6563ffde485accd044761974a
