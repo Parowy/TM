@@ -31,7 +31,7 @@ def zapis_do_pliku():
         list=[]
         for j in range(0,10):
             list.append([data[j+10*i][0], data[j+10*i][1]])
-        data_dict[i]=[list]
+        data_dict[i]=list
 
     os.chdir('..')
     if os.path.isfile('pickled_data'):
