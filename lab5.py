@@ -21,7 +21,7 @@ def compute_mfcc(filename):
 
 
 def zapis_do_pliku():
-    data_dict = {}
+    data = []
     dir = os.getcwd()
     dir = dir + '\\train\\'
     os.chdir(dir)
@@ -30,8 +30,16 @@ def zapis_do_pliku():
         speaker_id = filename.split('_')[0]
         number = filename.split('_')[1]
         mfcc_data = compute_mfcc(filename)
-        data_dict[filename] = [mfcc_data, number, speaker_id]
+        data.append([mfcc_data, number, speaker_id])
 
+
+
+    data_dict={}
+    for i in range(0,22):
+        list=[]
+        for j in range(0,10):
+            list.append([data[j+10*i][0], data[j+10*i][1]])
+        data_dict[data[i*10][2]]=[list]
 
     os.chdir('..')
     print(os.getcwd())
