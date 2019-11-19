@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 
 def compute_mfcc(filename):
     (rate, sig) = wav.read(filename)
-    m = mfcc(sig, rate)
+    m = mfcc(sig, samplerate=rate, winlen=0.025, winstep=0.01, numcep=13, nfilt=40, nfft=512, lowfreq=0, highfreq=None, preemph=0.97, ceplifter=22, appendEnergy=True)
     return m
 
 
@@ -50,13 +50,20 @@ def odczyt_z_pliku():
     return mfcc_data
 
 
-def GMobject(MFCC,n_comp,n_iter):
-    GMM = mixture.GaussianMixture(n_comp, max_iter=n_iter, covariance_type="diag",tol=1e-10000,reg_covar=1e-06,n_init=1,init_params='random')
-    models = GMM.fit(MFCC)
-    return models
 
+# MODEL ZE ZOPTYMALIZOWANYMI WARTOŚCIAMI
+def GMM(mfcc):
+    g=[]
+    for komponent in range(1,10):
+        gm=mixture.GaussianMixture(komponent,max_iter=20, covariance_type="diag", tol=1e-1000).fit(mfcc)
+        g.append(gm.bic(mfcc))
+    n_komponentow=np.argmin(g)
+    print (n_komponentow)
+    gm = mixture.GaussianMixture(n_komponentow,max_iter=20, covariance_type="diag", tol=1e-1000) # diagonalna macierz kowariancji; obniżona tolerancja w stosunku do domyślnej tol=0.001
+    model=gm.fit(mfcc)
+    return model
 
-def kfold_test(dict):
+def trening(dict):
     models_dict = {}
     pred = []
     x_true = []
@@ -69,10 +76,11 @@ def kfold_test(dict):
                 data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
                 mfcc_array.extend(data)
             array= np.asarray(mfcc_array)
-            models_dict[number] = GMobject(array,2,1)
+            models_dict[number] = GMM(array)
 
 
         for number in range(0,10):
+            predict_numbers=[]
             for speaker_id in test_index:
                 data = dict[speaker_id][number][0]
                 likelihood = []
@@ -81,28 +89,24 @@ def kfold_test(dict):
                     likelihood.append(models_dict.get(i).score(data))
                 pred.extend(np.where(likelihood == np.amax(likelihood)))
 
+
+
+    print(x_true)
     y_pred = []
     for i in range(0,len(x_true)):
         y_pred.extend(pred[i])
-    accuracy = accuracy_score(x_true,y_pred)
-    return accuracy
+    print(y_pred)
+    accuracy = accuracy_score(x_true,y_pred)*100
+
+    print(accuracy)
 
 
-def modele(dict):
-    models_dict = {}
-    for number in range(0,10):
-        mfcc_array = []
-        for speaker_id in dict:
-            data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
-            mfcc_array.extend(data)
-        array= np.asarray(mfcc_array)
-        models_dict[number] = GMobject(array,2,1)
-    return models_dict
+
 
 
 
 zapis_do_pliku()
 dict = odczyt_z_pliku()
-accuracy = kfold_test(dict)
-print(('accuracy = ' + str(accuracy)))
-models_dict = modele(dict)
+models_dict = trening(dict)
+
+print('end')
