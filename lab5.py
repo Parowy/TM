@@ -90,19 +90,14 @@ def kfold_test(dict):
 
 def modele(dict):
     models_dict = {}
-    pred = []
-    x_true = []
-
-    xvalid = KFold(n_splits = 5)
-    for train_index, test_index in xvalid.split(dict):
-        for number in range(0,10):
-            mfcc_array = []
-            for speaker_id in train_index:
-                data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
-                mfcc_array.extend(data)
-            array= np.asarray(mfcc_array)
-            models_dict[number] = GMobject(array,2,1)
-
+    for number in range(0,10):
+        mfcc_array = []
+        for speaker_id in dict:
+            data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
+            mfcc_array.extend(data)
+        array= np.asarray(mfcc_array)
+        models_dict[number] = GMobject(array,2,1)
+    return models_dict
 
 
 
@@ -110,5 +105,4 @@ zapis_do_pliku()
 dict = odczyt_z_pliku()
 accuracy = kfold_test(dict)
 print(('accuracy = ' + str(accuracy)))
-
-
+models_dict = modele(dict)
