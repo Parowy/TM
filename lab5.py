@@ -58,7 +58,7 @@ def GMobject(MFCC,n_comp,n_iter):
 
 def trening(dict):
     models_dict = {}
-    pred = []
+    pred = {}
     x_true = []
 
     xvalid = KFold(n_splits = 5)
@@ -79,16 +79,17 @@ def trening(dict):
                 x_true.append(number)
                 for i in range(0,10):
                     likelihood.append(models_dict.get(i).score(data))
-                pred.extend(np.where(likelihood == np.amax(likelihood)))
+                if pred.get(number,'None') == 'None':
+                    pred[number]=[]
+                pred[number].extend(np.where(likelihood == np.amax(likelihood))[0])
 
 
-
-    print(x_true)
-    y_pred = []
-    for i in range(0,len(x_true)):
-        y_pred.extend(pred[i])
-    print(y_pred)
-    accuracy = accuracy_score(x_true,y_pred)
+    x_true = []
+    accuracy = []
+    for i in range(0,10):
+        x_true = [i] * len(pred[number])
+        score = accuracy_score(x_true,pred[i])
+        accuracy.append(score)
     print(accuracy)
 
 
@@ -108,4 +109,3 @@ zapis_do_pliku()
 dict = odczyt_z_pliku()
 models_dict = trening(dict)
 
-print('end')
