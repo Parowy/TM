@@ -63,7 +63,7 @@ def GMM(mfcc):
     model=gm.fit(mfcc)
     return model
 
-def trening(dict):
+ef trening(dict):
     models_dict = {}
     pred = []
     x_true = []
@@ -76,11 +76,10 @@ def trening(dict):
                 data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
                 mfcc_array.extend(data)
             array= np.asarray(mfcc_array)
-            models_dict[number] = GMM(array)
+            models_dict[number] = GMobject(array,2,1)
 
 
         for number in range(0,10):
-            predict_numbers=[]
             for speaker_id in test_index:
                 data = dict[speaker_id][number][0]
                 likelihood = []
@@ -89,24 +88,38 @@ def trening(dict):
                     likelihood.append(models_dict.get(i).score(data))
                 pred.extend(np.where(likelihood == np.amax(likelihood)))
 
-
-
-    print(x_true)
     y_pred = []
     for i in range(0,len(x_true)):
         y_pred.extend(pred[i])
-    print(y_pred)
-    accuracy = accuracy_score(x_true,y_pred)*100
-
-    print(accuracy)
-
+    accuracy = accuracy_score(x_true,y_pred)
+    confusion = confusion_matrix(x_true,y_pred)
+    return accuracy,confusion
 
 
+
+
+
+
+
+def modele(dict):
+    models_dict = {}
+    for number in range(0,10):
+        mfcc_array = []
+        for speaker_id in dict:
+            data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
+            mfcc_array.extend(data)
+        array= np.asarray(mfcc_array)
+        models_dict[number] = GMobject(array,2,1)
+    return models_dict
 
 
 
 zapis_do_pliku()
 dict = odczyt_z_pliku()
-models_dict = trening(dict)
-
+[accuracy,confusion] = trening(dict)
+print(('Recognition rate = ' + str(accuracy)))
+print('Confusion matrix: ')
+print(confusion)
 print('end')
+#models_dict = modele(dict)
+
