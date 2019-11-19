@@ -5,7 +5,7 @@ import scipy.io.wavfile as wav
 import numpy as np
 from sklearn import mixture
 from sklearn.model_selection import KFold
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score,confusion_matrix
 
 
 def compute_mfcc(filename):
@@ -63,7 +63,7 @@ def GMM(mfcc):
     model=gm.fit(mfcc)
     return model
 
-ef trening(dict):
+def trening(dict):
     models_dict = {}
     pred = []
     x_true = []
@@ -76,10 +76,11 @@ ef trening(dict):
                 data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
                 mfcc_array.extend(data)
             array= np.asarray(mfcc_array)
-            models_dict[number] = GMobject(array,2,1)
+            models_dict[number] = GMM(array)
 
 
         for number in range(0,10):
+            predict_numbers = []
             for speaker_id in test_index:
                 data = dict[speaker_id][number][0]
                 likelihood = []
@@ -91,26 +92,11 @@ ef trening(dict):
     y_pred = []
     for i in range(0,len(x_true)):
         y_pred.extend(pred[i])
-    accuracy = accuracy_score(x_true,y_pred)
+    accuracy = accuracy_score(x_true,y_pred)*100
     confusion = confusion_matrix(x_true,y_pred)
     return accuracy,confusion
 
 
-
-
-
-
-
-def modele(dict):
-    models_dict = {}
-    for number in range(0,10):
-        mfcc_array = []
-        for speaker_id in dict:
-            data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
-            mfcc_array.extend(data)
-        array= np.asarray(mfcc_array)
-        models_dict[number] = GMobject(array,2,1)
-    return models_dict
 
 
 
@@ -121,5 +107,4 @@ print(('Recognition rate = ' + str(accuracy)))
 print('Confusion matrix: ')
 print(confusion)
 print('end')
-#models_dict = modele(dict)
 
