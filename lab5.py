@@ -56,9 +56,9 @@ def GMobject(MFCC,n_comp,n_iter):
     return models
 
 
-def trening(dict):
+def kfold_test(dict):
     models_dict = {}
-    pred = {}
+    pred = []
     x_true = []
 
     xvalid = KFold(n_splits = 5)
@@ -79,33 +79,36 @@ def trening(dict):
                 x_true.append(number)
                 for i in range(0,10):
                     likelihood.append(models_dict.get(i).score(data))
-                if pred.get(number,'None') == 'None':
-                    pred[number]=[]
-                pred[number].extend(np.where(likelihood == np.amax(likelihood))[0])
+                pred.extend(np.where(likelihood == np.amax(likelihood)))
+
+    y_pred = []
+    for i in range(0,len(x_true)):
+        y_pred.extend(pred[i])
+    accuracy = accuracy_score(x_true,y_pred)
+    return accuracy
 
 
+def modele(dict):
+    models_dict = {}
+    pred = []
     x_true = []
-    accuracy = []
-    for i in range(0,10):
-        x_true = [i] * len(pred[number])
-        score = accuracy_score(x_true,pred[i])
-        accuracy.append(score)
-    print(accuracy)
 
+    xvalid = KFold(n_splits = 5)
+    for train_index, test_index in xvalid.split(dict):
+        for number in range(0,10):
+            mfcc_array = []
+            for speaker_id in train_index:
+                data = dict[speaker_id][number][0]                                   #dict[mówca][cyfra][0-mfcc, 1-zwraca cyfre]
+                mfcc_array.extend(data)
+            array= np.asarray(mfcc_array)
+            models_dict[number] = GMobject(array,2,1)
 
-
-# OBLICZENI KOMPONENTOW
-def komponenty(mfcc,n):
-    g=[]
-    for i in range(1,250):
-        gm=mixture.GaussianMixture(n,max_iter=i, covariance_type="diag",tol=1e-100).fit(mfcc)
-        g.append(gm.bic(mfcc))
-    n_komponentow=min(g)
-    return n_komponentow
 
 
 
 zapis_do_pliku()
 dict = odczyt_z_pliku()
-models_dict = trening(dict)
+accuracy = kfold_test(dict)
+print(('accuracy = ' + str(accuracy)))
+
 
