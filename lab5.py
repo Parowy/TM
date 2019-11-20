@@ -6,6 +6,7 @@ import numpy as np
 from sklearn import mixture
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score,confusion_matrix
+from statistics import stdev
 
 
 def compute_mfcc(filename):
@@ -58,7 +59,7 @@ def GMM(mfcc):
         gm=mixture.GaussianMixture(komponent,max_iter=20, covariance_type="diag", tol=1e-1000).fit(mfcc)
         g.append(gm.bic(mfcc))
     n_komponentow=np.argmin(g)
-    print (n_komponentow)
+    #print (n_komponentow)
     gm = mixture.GaussianMixture(n_komponentow,max_iter=20, covariance_type="diag", tol=1e-1000) # diagonalna macierz kowariancji; obniżona tolerancja w stosunku do domyślnej tol=0.001
     model=gm.fit(mfcc)
     return model
@@ -94,16 +95,37 @@ def trening(dict):
         y_pred.extend(pred[i])
     accuracy = accuracy_score(x_true,y_pred)*100
     confusion = confusion_matrix(x_true,y_pred)
-    return accuracy,confusion
+    acc=[ accuracy_score(x_true[0:50],y_pred[0:50])*100,accuracy_score(x_true[50:100],y_pred[50:100])*100,accuracy_score(x_true[100:150],y_pred[100:150])*100,accuracy_score(x_true[150:200],y_pred[150:200])*100,accuracy_score(x_true[200:],y_pred[200:])*100]
+    print(acc)
+    std = stdev(acc)
+    return accuracy,confusion,std
 
 
 
+def class_accuracy(confusion):
+    c_accuracy = []
+    for i in range(0,10):
+        tp = confusion[i][i]
+        n = sum(confusion[i])
+        c_accuracy.append(tp/n * 100)
+    return c_accuracy
+
+def print_results():
+    print('\nRecognition rate = ' ,accuracy)
+    print('Standard diviation = ' , std)
+    print('\nConfusion matrix: ')
+    print(confusion)
+    class_acc = class_accuracy(confusion)
+    print('\nAccuracy of each model:')
+    list_a = [x for x in range(0, 10)]
+    for item_a, item_b in zip(list_a, class_acc):
+        print(item_a, ': ', item_b)
+    print('\nStandard deviation: ', stdev(class_acc))
+    print('end')
 
 
 zapis_do_pliku()
 dict = odczyt_z_pliku()
-[accuracy,confusion] = trening(dict)
-print(('Recognition rate = ' + str(accuracy)))
-print('Confusion matrix: ')
-print(confusion)
-print('end')
+[accuracy,confusion,std] = trening(dict)
+print_results()
+
