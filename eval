@@ -9,6 +9,7 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, confusion_matrix
 from statistics import stdev
 import csv
+from eval import *
 
 def compute_mfcc(filename):
     (rate, sig) = wav.read(filename)
@@ -116,7 +117,7 @@ def class_accuracy(confusion):
     return c_accuracy
 
 '''
-def print_results():
+def print_results(accuracy,std,confusion):
     print('\nRecognition rate = ', accuracy)
     print('Standard diviation = ', std)
     print('\nConfusion matrix: ')
@@ -151,7 +152,6 @@ def odczyt_eval():
         mfcc_data = compute_mfcc(file)
         data[file] = mfcc_data
     os.chdir('..')
-
     return data
 
 def find_answer(eval_data,models_dict):
@@ -170,10 +170,7 @@ def find_answer(eval_data,models_dict):
         spamwriter = csv.writer(csvfile, delimiter=' ',
                             quotechar='|', quoting=csv.QUOTE_NONE)
         for key in odpowiedzi:
-            spamwriter.writerow(['%s,%d,%.2f'%(key, odpowiedzi[key][0] , odpowiedzi[key][1])])
-
-
-
+            spamwriter.writerow(['%s,%d,%0.2f'%(key, odpowiedzi[key][0] , odpowiedzi[key][1])])
 
 
 #zapis_do_pliku()
@@ -183,5 +180,5 @@ dict = odczyt_z_pliku()
 models_dict = modele(dict)
 data = odczyt_eval()
 find_answer(data, models_dict)
-filename = "results.csv"
-eval(filename)
+evaluate()
+
