@@ -1,6 +1,7 @@
 import os
 import pickle
 from python_speech_features import mfcc
+from python_speech_features import delta
 import scipy.io.wavfile as wav
 import numpy as np
 from sklearn import mixture
