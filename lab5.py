@@ -56,11 +56,11 @@ def odczyt_z_pliku():
 def GMM(mfcc):
     g=[]
     for komponent in range(1,10):
-        gm=mixture.GaussianMixture(komponent,max_iter=20, covariance_type="diag", tol=1e-1000).fit(mfcc)
+        gm=mixture.GaussianMixture(komponent,max_iter=20, covariance_type="diag", tol=0.05,random_state=2).fit(mfcc)
         g.append(gm.bic(mfcc))
     n_komponentow=np.argmin(g)
     #print (n_komponentow)
-    gm = mixture.GaussianMixture(n_komponentow,max_iter=20, covariance_type="diag", tol=1e-1000) # diagonalna macierz kowariancji; obniżona tolerancja w stosunku do domyślnej tol=0.001
+    gm = mixture.GaussianMixture(n_komponentow, max_iter=20, covariance_type="diag", tol=0.05, random_state=2) # diagonalna macierz kowariancji; obniżona tolerancja w stosunku do domyślnej tol=0.001
     model=gm.fit(mfcc)
     return model
 
