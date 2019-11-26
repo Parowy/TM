@@ -12,6 +12,8 @@ from statistics import stdev
 def compute_mfcc(filename):
     (rate, sig) = wav.read(filename)
     m = mfcc(sig, samplerate=rate, winlen=0.025, winstep=0.01, numcep=13, nfilt=40, nfft=512, lowfreq=0, highfreq=None, preemph=0, ceplifter=22, appendEnergy=True)
+     m = delta(m, 6)
+    #m = delta(m, 2)
     return m
 
 
