@@ -170,7 +170,7 @@ def find_answer(eval_data,models_dict):
         spamwriter = csv.writer(csvfile, delimiter=' ',
                             quotechar='|', quoting=csv.QUOTE_NONE)
         for key in odpowiedzi:
-            spamwriter.writerow(['%s,%d,%f'%(key, odpowiedzi[key][0] , odpowiedzi[key][1])])
+            spamwriter.writerow(['%s,%d,%.2f'%(key, odpowiedzi[key][0] , odpowiedzi[key][1])])
 
 
 
