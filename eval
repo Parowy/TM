@@ -116,7 +116,6 @@ def class_accuracy(confusion):
         c_accuracy.append(tp / n * 100)
     return c_accuracy
 
-'''
 def print_results(accuracy,std,confusion):
     print('\nRecognition rate = ', accuracy)
     print('Standard diviation = ', std)
@@ -129,7 +128,7 @@ def print_results(accuracy,std,confusion):
         print(item_a, ': ', item_b)
     print('\nStandard deviation: ', stdev(class_acc))
     print('end')
-    '''
+
 
 def modele(dict):
     models_dict = {}
@@ -163,7 +162,6 @@ def find_answer(eval_data,models_dict):
             likelihood.append(models_dict.get(i).score(mfcc))
         like = np.amax(likelihood)
         pred = np.where(likelihood == np.amax(likelihood))
-        print(pred[0][0])
         odpowiedzi[key] = [pred[0][0],like]
 
     with open('results.csv', 'w', newline='') as csvfile:
@@ -176,7 +174,7 @@ def find_answer(eval_data,models_dict):
 #zapis_do_pliku()
 dict = odczyt_z_pliku()
 #[accuracy,confusion,std] = trening(dict)
-#print_results()
+#print_results(accuracy,std,confusion)
 models_dict = modele(dict)
 data = odczyt_eval()
 find_answer(data, models_dict)
