@@ -167,10 +167,9 @@ def find_answer(eval_data,models_dict):
         odpowiedzi[key] = [pred[0][0],like]
 
     with open('results.csv', 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=' ',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        spamwriter = csv.writer(csvfile, delimiter=',')
         for key in odpowiedzi:
-            spamwriter.writerow([key , ',' ,odpowiedzi[key][0] , ',' , odpowiedzi[key][1]])
+            spamwriter.writerow([key ,odpowiedzi[key][0] , odpowiedzi[key][1]])
 
 
 
