@@ -18,6 +18,6 @@ for i in range(0,sheet.nrows):
     name = sheet.cell_value(i, 0)
     print(name)
     arguments = {"keywords": name, "limit": 1,
-                 "print_urls": True}  # creating list of arguments
+                 "print_urls": False}  # creating list of arguments
     paths = response.download(arguments)
     
