@@ -1,3 +1,17 @@
+from google_images_download import google_images_download
+import xlrd
+import os
+import shutil
+
+
+# reading POIs
+wb = xlrd.open_workbook('POI.xlsx')
+sheet = wb.sheet_by_index(0)
+
+# needed to download
+response = google_images_download.googleimagesdownload()
+if os.path.exists('downloads') == True:
+    shutil.rmtree('downloads')
 
 for i in range(0,sheet.nrows):
     name = sheet.cell_value(i, 0)
@@ -5,5 +19,4 @@ for i in range(0,sheet.nrows):
     arguments = {"keywords": name, "limit": 1,
                  "print_urls": True}  # creating list of arguments
     paths = response.download(arguments)
-    
     
