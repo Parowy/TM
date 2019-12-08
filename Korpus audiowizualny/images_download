@@ -10,6 +10,7 @@ sheet = wb.sheet_by_index(0)
 
 # needed to download
 response = google_images_download.googleimagesdownload()
+
 if os.path.exists('downloads') == True:
     shutil.rmtree('downloads')
 
