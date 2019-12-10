@@ -12,6 +12,9 @@ cdir = os.getcwd()
 ddir = cdir + '\\downloads'
 os.chdir(ddir)
 
+
+#żeby działało foldery z zdjęciami muszą być w folderze downloads który jest w folderze projektu
+
 for dir in os.listdir(ddir):
     ndir = ddir + '\\'+ dir +'\\'
     os.chdir(ndir)
