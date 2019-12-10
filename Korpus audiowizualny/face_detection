@@ -1,0 +1,26 @@
+import cv2
+import numpy
+import os
+
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+cdir = os.getcwd()
+ddir = cdir + '\\downloads'
+os.chdir(ddir)
+
+for dir in os.listdir(ddir):
+    ndir = ddir + '\\'+ dir +'\\'
+    os.chdir(ndir)
+
+    for file in os.listdir(ndir):
+        img = cv2.imread(file)
+        img2 = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        face = face_cascade.detectMultiScale(img2,1.1,4)
+
+        for (x,y,w,h) in face:
+            faceimg = img[y:y+h, x:x+w]
+
+        cv2.imshow('img',img)
+        cv2.imshow('img2',faceimg)
+        cv2.waitKey()
+#cv2.destroyAllWindows()
