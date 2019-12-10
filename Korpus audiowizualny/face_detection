@@ -4,6 +4,10 @@ import os
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
+
+# musicie sb ściągnąć to:  https://raw.githubusercontent.com/opencv/opencv/master/data/haarcascades/haarcascade_profileface.xml
+# do folderu
+
 cdir = os.getcwd()
 ddir = cdir + '\\downloads'
 os.chdir(ddir)
