@@ -1,0 +1,18 @@
+from detector import detect_faces
+import os
+from PIL import Image
+
+cdir=os.path.abspath('..')
+ddir = cdir + '\\downloads'
+os.chdir(ddir)
+
+#żeby działało foldery z zdjęciami muszą być w folderze downloads który jest w folderze projektu
+
+for dir in os.listdir(ddir):
+    ndir = ddir + '\\'+ dir +'\\'
+    os.chdir(ndir)
+
+    for file in os.listdir(ndir):
+        im = Image.open(file)
+        os.path.abspath('...')
+        detect_faces(im)
